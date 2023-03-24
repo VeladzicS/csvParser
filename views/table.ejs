@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .mainContainer {
+            max-width: 1650px;
+            margin: 50px auto;
+        }
+        .headerContainer {
+            width: 100%;
+            display: flex;
+        }
+
+        .listWrapper {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            width: 100%;
+
+        }
+        ul {
+            width: calc(50% - 100px);
+            height: calc(50vh - 75px);
+           margin:0;
+            padding: 75px 25px 0 75px;
+            list-style: none;
+        }
+        li {
+           display: flex;
+
+        }
+        .bold {
+            font-weight: bold;
+
+        }
+        p {
+            margin: 0;
+            padding: 0;
+        }
+        @media print {
+            #date {
+                position: fixed;
+                top: 25px;
+                right: 50px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+
+
+<div class="mainContainer">
+    <h3 id="date">01/01/2023 - 28/02/2023</h3>
+    <div class="listWrapper">
+
+    <% rows.forEach(function(row, i) { %>
+            <ul>
+            <% headers.forEach(function(header) { %>
+                <% if (header === 'Position' || header === 'Points' || header === "Group" || header === "Breed") { %>
+                <li>
+                        <p class="bold"><%= header %>: </p>
+                        <p class="bold"><%= row[header] %></p>
+                </li>
+                    <% } else { %>
+                    <li>
+                     <p ><%= row[header] %></p>
+                    </li>
+                    <% } %>
+            <% }) %>
+            </ul>
+    <% }) %>
+    </div>
+</div>
+
+<% if (showButton) { %>
+    <button onclick="location.href='/generate-pdf'">Generate PDF</button>
+<% } %>
+
+</body>
+</html>

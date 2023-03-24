@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .mainContainer {
+            max-width: 1650px;
+            margin: 50px auto;
+        }
+        .headerContainer {
+            width: 100%;
+            display: flex;
+        }
+
+        .listWrapper {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            width: 100%;
+
+        }
+        ul {
+            width: 40%;
+            margin: 0 0 50px 0;
+            padding: 0;
+            list-style: none;
+        }
+        li {
+            display: flex;
+        }
+        .bold {
+            font-weight: bold;
+        }
+        p {
+            margin: 0;
+            padding: 0;
+        }
+
+        .print-only-header {
+            display: none;
+        }
+
+        @media print {
+            .print-only-header {
+                display: block;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                padding: 10px;
+                background-color: white;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="mainContainer">
+    <div class="listWrapper">
+        <% let currentGroup = ''; %>
+        <% rows.forEach(function(row, i) { %>
+            <% if (currentGroup !== row['Group']) { %>
+                <div class="headerContainer">
+                    <h3><%= row['Group'] %> -  </h3>
+                    <h3> - <%= row['Breed'] %></h3>
+                </div>
+                <% currentGroup = row['Group']; %>
+            <% } %>
+
+            <div class="print-only-header">
+                <%= row['Group'] %> - <%= row['Breed'] %>
+            </div>
+
+            <ul>
+                <% headers.forEach(function(header) { %>
+                    <% if (header === 'Position' || header === 'Points') { %>
+                        <li>
+                            <p><%= header %>: </p>
+                            <p class="bold"><%= row[header] %></p>
+                        </li>
+                    <% } else { %>
+                        <li>
+                            <p><%= row[header] %></p>
+                        </li>
+                    <% } %>
+                <% }) %>
+            </ul>
+        <% }) %>
+    </div>
+</div>
+
+<% if (showButton) { %>
+    <button onclick="location.href='/generate-pdf'">Generate PDF</button>
+<% } %>
+
+</body>
+</html>

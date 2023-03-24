@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .mainContainer {
+            max-width: 1650px;
+            margin: 50px auto;
+        }
+        .headerContainer {
+            width: 100%;
+            display: flex;
+        }
+
+        .listWrapper {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            width: 100%;
+
+        }
+        ul {
+            width: calc(50% - 100px);
+            height: calc(50vh - 75px);
+            margin:0;
+            padding: 75px 25px 0 75px;
+            list-style: none;
+        }
+        li {
+            display: flex;
+
+        }
+        .bold {
+            font-weight: bold;
+
+        }
+        p {
+            margin: 0;
+            padding: 0;
+        }
+        /* Add this style for the fixed header */
+        #fixedHeader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: white;
+            padding: 10px;
+            z-index: 1000;
+        }
+        .printHeader {
+            display: none;
+        }
+        @media print {
+            #fixedHeader {
+                display: none;
+            }
+            .printHeader {
+                display: block;
+                position: sticky;
+                top: -100px;
+                left: 50px;
+                background: white;
+                padding: 10px;
+                z-index: 1000;
+                font-size: 16px;
+            }
+            #date {
+                position: fixed;
+                top: 25px;
+                right: 50px;
+                text-align: center;
+            }
+        }
+        .hide-print-header {
+            display: none !important;
+        }
+
+    </style>
+</head>
+<body>
+
+<h2 id="fixedHeader"></h2>
+<h3 id="date">01/01/2023 - 28/02/2023</h3>
+<div class="mainContainer">
+    <div class="listWrapper">
+        <% rows.forEach(function(row, i) { %>
+            <ul>
+                <h2 class="printHeader"></h2>
+                <% headers.forEach(function(header) { %>
+                    <% if (header === 'Position' || header === 'Points' || header === "Group" || header === "Breed") { %>
+                        <li>
+                            <p class="bold"><%= header %>: </p>
+                            <p class="bold <%= header.toLowerCase() %>"><%= row[header] %></p>
+                        </li>
+                    <% } else { %>
+                        <li>
+                            <p class="<%= header.toLowerCase() %>"><%= row[header] %></p>
+                        </li>
+                    <% } %>
+                <% }) %>
+            </ul>
+        <% }) %>
+    </div>
+</div>
+
+<% if (showButton) { %>
+    <button onclick="location.href='/generate-pdf'">Generate PDF</button>
+<% } %>
+
+<script>
+    const fixedHeader = document.getElementById('fixedHeader');
+
+    function updateHeader(group, breed) {
+        fixedHeader.innerHTML = `Group: ${group} | Breed: ${breed}`;
+    }
+
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const group = entry.target.querySelector('.group');
+                const breed = entry.target.querySelector('.breed');
+                updateHeader(group.textContent, breed.textContent);
+            }
+        });
+    }, {
+        rootMargin: '-1px 0px 0px 0px'
+    });
+
+    const ulElements = document.querySelectorAll('ul');
+    ulElements.forEach((ul, index) => {
+        const group = ul.querySelector('.group');
+        const breed = ul.querySelector('.breed');
+        const printHeader = ul.querySelector('.printHeader');
+
+        if ((index + 1) % 5 !== 0 && index !== 0) {
+            printHeader.classList.add('hide-print-header');
+        }
+
+        printHeader.textContent = `Group: ${group.textContent} | Breed: ${breed.textContent}`;
+        observer.observe(ul);
+    });
+</script>
+
+</body>
+</html>
