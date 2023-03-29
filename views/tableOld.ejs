@@ -18,73 +18,103 @@
             width: 100%;
 
         }
+        .singleItem {
+            width: calc(50% - 100px);
+            height: calc(45vh - 25px);
+            padding: 25px 25px 0 25px;
+        }
         ul {
-            width: 40%;
-            margin: 0 0 50px 0;
+
+            margin:0;
             padding: 0;
             list-style: none;
         }
         li {
             display: flex;
+
         }
         .bold {
             font-weight: bold;
+
         }
         p {
             margin: 0;
             padding: 0;
         }
-
-        .print-only-header {
-            display: none;
-        }
-
         @media print {
-            .print-only-header {
-                display: block;
+            #date {
                 position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                padding: 10px;
-                background-color: white;
-                font-size: 14px;
+                top: 25px;
+                right: 50px;
+                text-align: center;
             }
+        }
+        form {
+            margin-top: 15px;
+        }
+        form div {
+            margin: 5px 0;
+        }
+        label {
+            font-size: 12px;
+            font-weight: bold;
+            padding-right: 5px;
+            margin-top: 5px;
+        }
+        input {
+            border: none;
+            border-bottom: 1px solid black;
         }
     </style>
 </head>
 <body>
 
+
+
 <div class="mainContainer">
+    <h3 id="date">01/01/2023 - 28/02/2023</h3>
+    <p>Unique Address count: <%= uniqueAddressCount %></p>
+    <p>Unique Address 2 count: <%= uniqueAddress2Count %></p>
+    <p>Total: <%= uniqueAddress2Count *1 + uniqueAddressCount *1  %></p>
     <div class="listWrapper">
-        <% let currentGroup = ''; %>
+
         <% rows.forEach(function(row, i) { %>
-            <% if (currentGroup !== row['Group']) { %>
-                <div class="headerContainer">
-                    <h3><%= row['Group'] %> -  </h3>
-                    <h3> - <%= row['Breed'] %></h3>
-                </div>
-                <% currentGroup = row['Group']; %>
-            <% } %>
+            <div class="singleItem">
+                <ul>
+                    <% headers.forEach(function(header) { %>
+                        <% if (header === 'Position' || header === 'Points' || header === "Group" || header === "Breed") { %>
+                            <li>
+                                <p class="bold"><%= header %>: </p>
+                                <p class="bold"><%= row[header] %></p>
+                            </li>
+                        <% } else { %>
+                            <li>
+                                <p ><%= row[header] %></p>
+                            </li>
+                        <% } %>
 
-            <div class="print-only-header">
-                <%= row['Group'] %> - <%= row['Breed'] %>
+                    <% }) %>
+                </ul>
+                <form>
+                    <div>
+                        <label for="contactone">Contact/Email</label>
+                        <input type="text" name="contactone" id="contactone">
+                    </div>
+                    <div>
+                        <label for="phoneone">Phone</label>
+                        <input type="text" name="phoneone" id="phoneone">
+                    </div>
+                    <div>
+                        <label for="contacttwo">Contact/Email</label>
+                        <input type="text" name="contacttwo" id="contacttwo">
+                    </div>
+                    <div>
+                        <label for="phonetwo">Phone</label>
+                        <input type="text" name="phonetwo" id="phonetwo">
+                    </div>
+                </form>
+
             </div>
-
-            <ul>
-                <% headers.forEach(function(header) { %>
-                    <% if (header === 'Position' || header === 'Points') { %>
-                        <li>
-                            <p><%= header %>: </p>
-                            <p class="bold"><%= row[header] %></p>
-                        </li>
-                    <% } else { %>
-                        <li>
-                            <p><%= row[header] %></p>
-                        </li>
-                    <% } %>
-                <% }) %>
-            </ul>
         <% }) %>
     </div>
 </div>

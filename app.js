@@ -9,11 +9,28 @@ const puppeteer = require('puppeteer');
 const app = express();
 app.set('view engine', 'ejs');
 app.set('views', './views');
+const outputFolderPath = './pdf';
+async function generatePdfForGroup(headers, groupRows, groupName) {
+    const html = await ejs.renderFile('./views/table.ejs', { headers, rows: groupRows, showButton: false });
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.setContent(html, { waitUntil: 'networkidle0', timeout: 160000 });
+
+    const pdfBuffer = await page.pdf({ format: 'A4', timeout: 160000 });
+    await browser.close();
+
+    fs.writeFileSync(`${outputFolderPath}/${groupName}.pdf`, pdfBuffer);
+}
+if (!fs.existsSync(outputFolderPath)) {
+    fs.mkdirSync(outputFolderPath);
+}
+
 app.get('/generate-pdf', async (req, res) => {
     const csvFile = './Feb23.csv';
 
     const headers = [];
     const rows = [];
+    const groups = {};
 
     fs.createReadStream(csvFile)
         .pipe(csvParser())
@@ -22,19 +39,20 @@ app.get('/generate-pdf', async (req, res) => {
         })
         .on('data', (row) => {
             rows.push(row);
+            if (row.Group) {
+                const group = row.Group;
+                if (groups[group]) {
+                    groups[group].push(row);
+                } else {
+                    groups[group] = [row];
+                }
+            }
         })
         .on('end', async () => {
-            const html = await ejs.renderFile('./views/table.ejs', { headers, rows, showButton: false });
-            fs.writeFileSync('output.html', html);
-            const browser = await puppeteer.launch();
-            const page = await browser.newPage();
-            await page.setContent(html, { waitUntil: 'networkidle0', timeout: 160000 });
-
-            const pdfBuffer = await page.pdf({ format: 'A4', timeout: 160000 });
-            await browser.close();
-
-            res.type('application/pdf');
-            res.send(pdfBuffer);
+            for (const groupName in groups) {
+                await generatePdfForGroup(headers, groups[groupName], groupName);
+            }
+            res.send('PDFs generated.');
         });
 });
 
@@ -44,6 +62,8 @@ app.get('/table', async (req, res) => {
 
     const headers = [];
     const rows = [];
+    const uniqueAddresses = new Set();
+    const uniqueAddresses2 = new Set();
 
     fs.createReadStream(csvFile)
         .pipe(csvParser())
@@ -52,9 +72,21 @@ app.get('/table', async (req, res) => {
         })
         .on('data', (row) => {
             rows.push(row);
+            uniqueAddresses.add(row.Address);
+            uniqueAddresses2.add(row['Address2']);
         })
         .on('end', async () => {
-            res.render('table', { headers, rows, showButton: true });
+            const overlappingAddresses = new Set([...uniqueAddresses].filter(x => uniqueAddresses2.has(x)));
+            const nonOverlappingAddresses = new Set([...uniqueAddresses].filter(x => !overlappingAddresses.has(x)));
+            const nonOverlappingAddresses2 = new Set([...uniqueAddresses2].filter(x => !overlappingAddresses.has(x)));
+
+            res.render('table', {
+                headers,
+                rows,
+                showButton: true,
+                uniqueAddressCount: nonOverlappingAddresses.size,
+                uniqueAddress2Count: nonOverlappingAddresses2.size
+            });
         });
 });
 
