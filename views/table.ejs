@@ -72,7 +72,7 @@
 
 
 <div class="mainContainer">
-    <h3 id="date">01/01/2023 - 28/02/2023</h3>
+    <h3 id="date">06/01/2023 - 06/30/2023</h3>
     <div class="listWrapper">
 
     <% rows.forEach(function(row, i) { %>
@@ -92,24 +92,24 @@
               
             <% }) %>
             </ul>
-            <form>
-                <div>
-                    <label for="contactone">Contact/Email</label>
-                    <input type="text" name="contactone" id="contactone">
-                </div>
-                <div>
-                    <label for="phoneone">Phone</label>
-                    <input type="text" name="phoneone" id="phoneone">
-                </div>
-                <div>
-                    <label for="contacttwo">Contact/Email</label>
-                    <input type="text" name="contacttwo" id="contacttwo">
-                </div>
-                <div>
-                    <label for="phonetwo">Phone</label>
-                    <input type="text" name="phonetwo" id="phonetwo">
-                </div>
-            </form>
+             <form>
+                 <div>
+                     <label for="contactone<%= i %>">Contact/Email</label>
+                     <input type="text" name="contactone<%= i %>" id="contactone<%= i %>">
+                 </div>
+                 <div>
+                     <label for="phoneone<%= i %>">Phone</label>
+                     <input type="text" name="phoneone<%= i %>" id="phoneone<%= i %>">
+                 </div>
+                 <div>
+                     <label for="contacttwo<%= i %>">Contact/Email</label>
+                     <input type="text" name="contacttwo<%= i %>" id="contacttwo<%= i %>">
+                 </div>
+                 <div>
+                     <label for="phonetwo<%= i %>">Phone</label>
+                     <input type="text" name="phonetwo<%= i %>" id="phonetwo<%= i %>">
+                 </div>
+             </form>
 
          </div>
     <% }) %>
