@@ -38,7 +38,7 @@ if (!fs.existsSync(outputFolderPath)) {
 }
 
 app.get('/generate-pdf', async (req, res) => {
-    const csvFile = './June23.csv';
+    const csvFile = './Mar24.csv';
     const headers = [];
     const rows = [];
     const groups = {};
@@ -72,7 +72,7 @@ app.get('/generate-pdf', async (req, res) => {
 
 
 app.get('/generate-breed-pdf', async (req, res) => {
-    const csvFile = './June23.csv';
+    const csvFile = './Mar24.csv';
     const breedFilter = req.query.breed;
     const headers = [];
     const rows = [];
@@ -115,7 +115,7 @@ app.get('/generate-breed-pdf', async (req, res) => {
 
 
 app.get('/table', async (req, res) => {
-    const csvFile = './June23.csv';
+    const csvFile = './Mar24.csv';
     const breedFilter = req.query.breed;
     const headers = [];
     const rows = [];
@@ -151,7 +151,7 @@ app.get('/table', async (req, res) => {
 });
 
 app.get('/first-three-breeds', async (req, res) => {
-    const csvFile = './June23.csv';
+    const csvFile = './Mar24.csv';
 
     const headers = [];
     const rows = [];
@@ -192,7 +192,7 @@ app.get('/first-three-breeds', async (req, res) => {
 });
 
 app.get('/generate-pdf-first-three', async (req, res) => {
-    const csvFile = './June23.csv';
+    const csvFile = './Mar24.csv';
 
     const headers = [];
     const rows = [];
